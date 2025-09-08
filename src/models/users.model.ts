@@ -5,6 +5,7 @@ import {
   ForeignKey,
   Table,
   Model,
+  BelongsTo,
 } from 'sequelize-typescript';
 import { persona } from './persona.model';
 
@@ -41,4 +42,7 @@ export class users
 
   @Column({ type: DataType.BOOLEAN, allowNull: true, defaultValue: false })
   declare estado?: boolean;
+
+  @BelongsTo(() => persona, { as: 'persona' })
+  declare persona?: persona;
 }

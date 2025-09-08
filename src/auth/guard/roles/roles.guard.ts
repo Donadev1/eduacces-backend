@@ -1,9 +1,5 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+// auth/roles.guard.ts
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { ROLES_KEY } from '../../decorators/roles/roles.decorator';
 
@@ -11,25 +7,21 @@ import { ROLES_KEY } from '../../decorators/roles/roles.decorator';
 export class RolesGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
-  canActivate(context: ExecutionContext): boolean {
-    const requiredRoles = this.reflector.getAllAndOverride<string[]>(
-      ROLES_KEY,
-      [context.getHandler(), context.getClass()],
-    );
+  canActivate(ctx: ExecutionContext): boolean {
+    const roles = this.reflector.getAllAndOverride<string[]>(ROLES_KEY, [
+      ctx.getHandler(),
+      ctx.getClass(),
+    ]);
+    if (!roles || roles.length === 0) return true;
 
-    if (!requiredRoles) {
-      return true; // No roles requeridos
-    }
+    const req = ctx.switchToHttp().getRequest();
+    const user = req.user as { rol?: string };
+    if (!user?.rol) return false;
 
-    const request = context.switchToHttp().getRequest();
-    const user = request.user;
+    const rol = (user.rol || '').toLowerCase();
 
-    if (!user) {
-      throw new UnauthorizedException('Usuario no autenticado');
-    }
+    const normalized = rol === 'directora' ? 'directivo' : rol;
 
-    //console.log('User recibido en el guard:', user);
-
-    return requiredRoles.includes(user.rol);
+    return roles.map((r) => r.toLowerCase()).includes(normalized);
   }
 }

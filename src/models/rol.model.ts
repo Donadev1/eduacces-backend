@@ -1,5 +1,5 @@
 import { Optional } from 'sequelize';
-import { Column, DataType, HasOne, Model, Table } from 'sequelize-typescript';
+import { Column, DataType, HasMany, Model, Table } from 'sequelize-typescript';
 import { persona } from './persona.model';
 
 interface rolAttributes {
@@ -23,6 +23,6 @@ export class rol
   @Column({ type: DataType.STRING(50), allowNull: false })
   declare nombre: string;
 
-  @HasOne(() => persona, { foreignKey: 'id_rol' })
-  declare persona?: persona;
+  @HasMany(() => persona, { foreignKey: 'id_rol', as: 'personas' })
+  declare personas?: persona[];
 }

@@ -3,10 +3,16 @@ import { PersonaRepository } from './persona.repository';
 import { CreatePersonaDto } from './dto/create.persona.dto';
 import { persona } from 'src/models/persona.model';
 import { UpdatePersonaDto } from './dto/update.persona.dto';
+import { SensorClientService } from 'src/sensor-client/sensor-client.service';
+import { HuellaMapService } from 'src/huella_map/huella_map.service';
 
 @Injectable()
 export class PersonaService {
-  constructor(private readonly personaRepository: PersonaRepository) {}
+  constructor(
+    private readonly personaRepository: PersonaRepository,
+    private readonly sensorcliente: SensorClientService,
+    private readonly huellaMapService: HuellaMapService,
+  ) {}
 
   async findAll(): Promise<persona[]> {
     return this.personaRepository.findAll();
@@ -72,5 +78,8 @@ export class PersonaService {
     }
 
     return await this.personaRepository.remove(id_persona);
+  }
+  async findByIdWithRol(id_persona: number) {
+    return this.personaRepository.findByIdWithRol(id_persona);
   }
 }

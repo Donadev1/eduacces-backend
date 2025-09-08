@@ -30,7 +30,19 @@ export class PersonaRepository {
   }
 
   async findById(id_persona: number): Promise<persona | null> {
-    return this.personaModel.findByPk(id_persona);
+    return this.personaModel.findByPk(id_persona, {
+      attributes: [
+        'id_persona',
+        'documento',
+        'nombre',
+        'apellido',
+        'correo',
+        'telefono',
+        [col('rol.nombre'), 'rol'],
+      ],
+      include: [{ model: rol, attributes: [] }],
+      raw: true,
+    });
   }
 
   async create(createpersonadto: CreatePersonaDto): Promise<persona> {
@@ -62,5 +74,11 @@ export class PersonaRepository {
       where: { id_persona },
     });
     return deleted > 0;
+  }
+
+  findByIdWithRol(id_persona: number) {
+    return this.personaModel.findByPk(id_persona, {
+      include: [{ model: rol, as: 'rol', attributes: ['id_rol', 'nombre'] }],
+    });
   }
 }

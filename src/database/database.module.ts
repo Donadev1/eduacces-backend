@@ -5,6 +5,8 @@ import database from './database';
 import { persona } from 'src/models/persona.model';
 import { rol } from 'src/models/rol.model';
 import { users } from 'src/models/users.model';
+import { HuellaMap } from 'src/models/hulla_map';
+import { asistencia } from 'src/models/asistencia.model';
 
 @Module({
   imports: [
@@ -26,7 +28,7 @@ import { users } from 'src/models/users.model';
           password: configService.get<string>('database.password'),
           database: configService.get<string>('database.database'),
           autoLoadModels: true,
-          models: [persona, rol, users],
+          models: [persona, rol, users, HuellaMap, asistencia],
           synchronize: false,
         };
       },
