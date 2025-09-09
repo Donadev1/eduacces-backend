@@ -34,7 +34,7 @@ export class HuellaMap
   declare id_persona: number;
   @Column({ type: DataType.DATE, allowNull: false })
   declare fecha_registro: Date;
-  @Column({ type: DataType.DATE, allowNull: false })
+  @Column({ type: DataType.DATE, allowNull: true })
   declare last_seen: Date;
 
   @BelongsTo(() => persona, { foreignKey: 'id_persona', as: 'persona' })

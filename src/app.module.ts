@@ -9,9 +9,19 @@ import { HuellaMapModule } from './huella_map/huella_map.module';
 import { AsistenciaModule } from './asistencia/asistencia.module';
 import { AccesoModule } from './acceso/acceso.module';
 import { SensorClientService } from './sensor-client/sensor-client.service';
+import { HuellasModule } from './huella/huella.module';
 
 @Module({
-  imports: [DatabaseModule, AuthModule, PersonaModule, UserModule, HuellaMapModule, AsistenciaModule, AccesoModule],
+  imports: [
+    DatabaseModule,
+    AuthModule,
+    PersonaModule,
+    UserModule,
+    HuellaMapModule,
+    AsistenciaModule,
+    AccesoModule,
+    HuellasModule,
+  ],
   controllers: [AppController],
   providers: [AppService, SensorClientService],
 })
