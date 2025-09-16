@@ -30,10 +30,12 @@ export class EstudianteFicha
   })
   id_estudiante_ficha!: number;
 
+  @ForeignKey(() => persona)
   @Column({
     type: DataType.INTEGER,
   })
   id_persona!: number;
+
   @ForeignKey(() => Ficha)
   @Column({
     type: DataType.INTEGER,
