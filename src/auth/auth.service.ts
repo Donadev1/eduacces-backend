@@ -2,14 +2,11 @@ import {
   Injectable,
   UnauthorizedException,
   ForbiddenException,
-  ConflictException,
   NotFoundException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/user/user.service';
-import { RegisterTestDto } from './dto/register.dto';
 import { PersonaService } from 'src/persona/persona.service';
-import * as bcrypt from 'bcrypt';
 
 type JwtPayload = {
   id_user: number;
@@ -60,12 +57,6 @@ export class AuthService {
     if (!user || !user.estado)
       throw new UnauthorizedException('Credenciales inválidas');
 
-    //console.log('DBG user:', {
-    //correo: u.correo,
-    //id_persona: u.id_persona,
-    //rol: u.persona?.rol?.nombre,
-    //});
-
     const hash = (user as any).password ?? (user as any).contrasena;
     if (!hash) throw new NotFoundException('Usuario sin contraseña registrada');
 
@@ -93,37 +84,5 @@ export class AuthService {
 
   async me(userFromReq: JwtPayload) {
     return userFromReq;
-  }
-
-  async registerTest(dto: RegisterTestDto) {
-    const correo = dto.correo.trim().toLowerCase();
-
-    const exists = await this.usersService.findByCorreoWithPersonaRol(correo);
-    if (exists) throw new ConflictException('El correo ya esta registrado');
-
-    const per = await this.personaService.findByIdWithRol(dto.id_persona);
-    if (!per) throw new NotFoundException('Persona no existe');
-
-    const hash = await bcrypt.hash(dto.password, 10);
-
-    const nuevo = await this.usersService.create({
-      correo,
-      password: hash,
-      id_persona: dto.id_persona,
-      estado: dto.estado ?? true,
-    });
-
-    return {
-      id_user: nuevo.id_user,
-      correo: nuevo.correo,
-      id_persona: nuevo.id_persona,
-      estado: nuevo.estado,
-      persona: {
-        id_persona: per.id_persona,
-        nombre: per.nombre,
-        apellido: per.apellido,
-        rol: per.rol?.nombre,
-      },
-    };
   }
 }

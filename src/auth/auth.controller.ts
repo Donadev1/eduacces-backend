@@ -34,14 +34,4 @@ export class AuthController {
     return this.auth.me(req.user);
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('instructor', 'directivo')
-  @Get('panel')
-  panel() {
-    return { ok: true, scope: 'panel de instructores y dirección' };
-  }
-  @Post('register-test')
-  registerTest(@Body() dto: RegisterTestDto) {
-    return this.auth.registerTest(dto);
-  }
 }
