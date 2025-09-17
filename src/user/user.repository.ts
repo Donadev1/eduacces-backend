@@ -4,6 +4,7 @@ import { users } from 'src/models/users.model';
 import { persona } from 'src/models/persona.model';
 import { rol } from 'src/models/rol.model';
 import { UpdateUserDto } from './dto/update.user.dto';
+import { col } from 'sequelize';
 
 @Injectable()
 export class UsersRepository {
@@ -42,9 +43,9 @@ export class UsersRepository {
 
   findAll(): Promise<users[]> {
     return this.model.findAll({
-      attributes: {
-        exclude: ['password'],
-      },
+      attributes: ['id_user', 'correo', [col('persona.nombre'), 'persona']],
+      include: [{ model: persona, attributes: [] }],
+      raw: true,
     });
   }
 
