@@ -1,9 +1,9 @@
 import { Column, DataType, Model, Table } from 'sequelize-typescript';
 
-interface AtributtesCarrera {
-  id_carrera: number;
-  name: string;
-  description: string;
+export interface AtributtesCarrera {
+  id_carrera?: number;
+  nombre: string;
+  descripcion: string;
 }
 
 @Table({
@@ -25,10 +25,10 @@ export class Carrera
     type: DataType.TEXT,
     allowNull: false,
   })
-  name!: string;
+  nombre!: string;
   @Column({
     type: DataType.TEXT,
     allowNull: false,
   })
-  description!: string;
+  descripcion!: string;
 }

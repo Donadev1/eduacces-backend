@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PersonaRepository } from './persona.repository';
 import { CreatePersonaDto } from './dto/create.persona.dto';
