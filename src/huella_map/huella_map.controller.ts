@@ -50,4 +50,9 @@ export class HuellaMapController {
     await this.service.touchLastSeen(id_sensor);
     return { ok: true };
   }
+
+  @Get()
+  async FindAll() {
+    return this.service.FindAll();
+  }
 }

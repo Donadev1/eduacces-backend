@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { col } from 'sequelize';
 import { HuellaMap } from 'src/models/hulla_map';
 import { persona } from 'src/models/persona.model';
 
@@ -47,5 +48,13 @@ export class HuellaMapRepository {
       { last_seen: new Date() },
       { where: { id_sensor } },
     );
+  }
+
+  async FindAll(): Promise<HuellaMap[]> {
+    return this.model.findAll({
+      attributes: ['id_sensor', [col('persona.nombre'), 'persona']],
+      include: [{ model: persona, attributes: [] }],
+      raw: true,
+    });
   }
 }

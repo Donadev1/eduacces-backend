@@ -16,9 +16,9 @@ export class UsersRepository {
       include: [
         {
           model: persona,
-          as: 'persona', // <-- DEBE coincidir con @BelongsTo({ as: 'persona' })
+          as: 'persona',
           include: [
-            { model: rol, as: 'rol', attributes: ['id_rol', 'nombre'] }, // <-- alias igual
+            { model: rol, as: 'rol', attributes: ['id_rol', 'nombre'] },
           ],
         },
       ],

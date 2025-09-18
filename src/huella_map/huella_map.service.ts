@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { HuellaMapRepository } from './huella_map.repository';
+import { HuellaMap } from 'src/models/hulla_map';
 
 @Injectable()
 export class HuellaMapService {
@@ -15,5 +16,8 @@ export class HuellaMapService {
   }
   touchLastSeen(id_sensor: number) {
     return this.huellaMapRepository.touchLastSeen(id_sensor);
+  }
+  async FindAll(): Promise<HuellaMap[]> {
+    return this.huellaMapRepository.FindAll();
   }
 }
