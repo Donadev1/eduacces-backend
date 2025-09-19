@@ -10,6 +10,7 @@ import { AsistenciaModule } from './asistencia/asistencia.module';
 import { AccesoModule } from './acceso/acceso.module';
 import { SensorClientService } from './sensor-client/sensor-client.service';
 import { HuellasModule } from './huella/huella.module';
+import { CarreraModule } from './carreras/carrera.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { HuellasModule } from './huella/huella.module';
     AsistenciaModule,
     AccesoModule,
     HuellasModule,
+    CarreraModule,
   ],
   controllers: [AppController],
   providers: [AppService, SensorClientService],

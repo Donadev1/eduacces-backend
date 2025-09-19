@@ -31,7 +31,7 @@ export class UsersRepository {
     id_persona: number;
     estado?: boolean;
   }) {
-    return this.model.create(data as any);
+    return this.model.create(data);
   }
 
   //BUSCAR USERS
