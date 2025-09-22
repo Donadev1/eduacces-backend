@@ -15,6 +15,7 @@ import { FichaController } from './ficha/ficha.controller';
 import { FichaService } from './ficha/ficha.service';
 import { FichaModule } from './ficha/ficha.module';
 import { MateriaModule } from './tables-relation-ficha/materias/materias.module';
+import { DocenteMateriaFichaModule } from './tables-relation-ficha/docente-materia-ficha/docente-materia-ficha.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { MateriaModule } from './tables-relation-ficha/materias/materias.module'
     CarreraModule,
     FichaModule,
     MateriaModule,
+    DocenteMateriaFichaModule,
   ],
   controllers: [AppController, FichaController],
   providers: [AppService, SensorClientService, FichaService],

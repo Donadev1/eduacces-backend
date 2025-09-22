@@ -12,7 +12,7 @@ import { Subjects } from './subjects.model';
 import { Ficha } from './ficha.model';
 
 interface AtributtesDocenteMateriaFicha {
-  id_docente_materia_ficha: number;
+  id_docente_materia_ficha?: number;
   id_persona: number;
   id_materia: number;
   id_ficha: number;
