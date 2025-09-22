@@ -11,6 +11,9 @@ import { AccesoModule } from './acceso/acceso.module';
 import { SensorClientService } from './sensor-client/sensor-client.service';
 import { HuellasModule } from './huella/huella.module';
 import { CarreraModule } from './carreras/carrera.module';
+import { FichaController } from './ficha/ficha.controller';
+import { FichaService } from './ficha/ficha.service';
+import { FichaModule } from './ficha/ficha.module';
 
 @Module({
   imports: [
@@ -23,8 +26,9 @@ import { CarreraModule } from './carreras/carrera.module';
     AccesoModule,
     HuellasModule,
     CarreraModule,
+    FichaModule,
   ],
-  controllers: [AppController],
-  providers: [AppService, SensorClientService],
+  controllers: [AppController, FichaController],
+  providers: [AppService, SensorClientService, FichaService],
 })
 export class AppModule {}
