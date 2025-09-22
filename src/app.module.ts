@@ -10,10 +10,11 @@ import { AsistenciaModule } from './asistencia/asistencia.module';
 import { AccesoModule } from './acceso/acceso.module';
 import { SensorClientService } from './sensor-client/sensor-client.service';
 import { HuellasModule } from './huella/huella.module';
-import { CarreraModule } from './carreras/carrera.module';
+import { CarreraModule } from './tables-relation-ficha/carreras/carrera.module';
 import { FichaController } from './ficha/ficha.controller';
 import { FichaService } from './ficha/ficha.service';
 import { FichaModule } from './ficha/ficha.module';
+import { MateriaModule } from './tables-relation-ficha/materias/materias.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { FichaModule } from './ficha/ficha.module';
     HuellasModule,
     CarreraModule,
     FichaModule,
+    MateriaModule,
   ],
   controllers: [AppController, FichaController],
   providers: [AppService, SensorClientService, FichaService],
