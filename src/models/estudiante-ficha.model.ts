@@ -10,7 +10,7 @@ import { persona } from './persona.model';
 import { Ficha } from './ficha.model';
 
 interface AtributtesEstudianteFicha {
-  id_estudiante_ficha: number;
+  id_estudiante_ficha?: number;
   id_persona: number;
   id_ficha: number;
 }
