@@ -5,8 +5,8 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { DocenteMateriaFicha } from 'src/models/docente-materia-ficha.model';
 
 @Module({
-  imports: [SequelizeModule.forFeature([DocenteMateriaFicha])]
+  imports: [SequelizeModule.forFeature([DocenteMateriaFicha])],
   controllers: [DocenteMateriaFichaController],
-  providers: [DocenteMateriaFichaService]
+  providers: [DocenteMateriaFichaService],
 })
 export class DocenteMateriaFichaModule {}

@@ -15,7 +15,7 @@ import { JwtAuthGuard } from 'src/auth/guard/auth/auth.guard';
 import { RolesGuard } from 'src/auth/guard/roles/roles.guard';
 import { Roles } from 'src/auth/decorators/roles/roles.decorator';
 
-@Controller('docente-materia-ficha')
+@Controller('docente-ficha')
 export class DocenteMateriaFichaController {
   constructor(private readonly service: DocenteMateriaFichaService) {}
 
