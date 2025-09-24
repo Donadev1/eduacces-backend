@@ -10,7 +10,13 @@ import { AsistenciaModule } from './asistencia/asistencia.module';
 import { AccesoModule } from './acceso/acceso.module';
 import { SensorClientService } from './sensor-client/sensor-client.service';
 import { HuellasModule } from './huella/huella.module';
-import { CarreraModule } from './carreras/carrera.module';
+import { CarreraModule } from './tables-relation-ficha/carreras/carrera.module';
+import { FichaController } from './ficha/ficha.controller';
+import { FichaService } from './ficha/ficha.service';
+import { FichaModule } from './ficha/ficha.module';
+import { MateriaModule } from './tables-relation-ficha/materias/materias.module';
+import { DocenteMateriaFichaModule } from './tables-relation-ficha/docente-materia-ficha/docente-materia-ficha.module';
+import { EstudianteFichaModule } from './tables-relation-ficha/estudiante-ficha/estudiante-ficha.module';
 
 @Module({
   imports: [
@@ -23,8 +29,12 @@ import { CarreraModule } from './carreras/carrera.module';
     AccesoModule,
     HuellasModule,
     CarreraModule,
+    FichaModule,
+    MateriaModule,
+    DocenteMateriaFichaModule,
+    EstudianteFichaModule,
   ],
-  controllers: [AppController],
-  providers: [AppService, SensorClientService],
+  controllers: [AppController, FichaController],
+  providers: [AppService, SensorClientService, FichaService],
 })
 export class AppModule {}

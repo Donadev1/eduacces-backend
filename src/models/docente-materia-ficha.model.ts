@@ -6,20 +6,19 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
-import { Carrera } from './carrera.model';
 import { persona } from './persona.model';
-import { Subjects } from './subjects.model';
 import { Ficha } from './ficha.model';
+import { Materias } from './materias.model';
 
 interface AtributtesDocenteMateriaFicha {
-  id_docente_materia_ficha: number;
+  id_docente_materia_ficha?: number;
   id_persona: number;
   id_materia: number;
   id_ficha: number;
 }
 
 @Table({
-  tableName: 'ficha',
+  tableName: 'docente_materia_ficha',
   timestamps: false,
 })
 export class DocenteMateriaFicha
@@ -39,7 +38,7 @@ export class DocenteMateriaFicha
   })
   id_persona!: number;
 
-  @ForeignKey(() => Subjects)
+  @ForeignKey(() => Materias)
   @Column({
     type: DataType.INTEGER,
   })
@@ -51,6 +50,12 @@ export class DocenteMateriaFicha
   })
   id_ficha!: number;
 
-  @BelongsTo(() => Carrera)
-  carrera!: Carrera;
+  @BelongsTo(() => persona)
+  persona!: persona;
+
+  @BelongsTo(() => Materias)
+  materia!: Materias;
+
+  @BelongsTo(() => Ficha)
+  ficha!: Ficha;
 }

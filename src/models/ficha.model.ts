@@ -8,8 +8,8 @@ import {
 } from 'sequelize-typescript';
 import { Carrera } from './carrera.model';
 
-interface AtributtesFicha {
-  id_ficha: number;
+export interface AtributtesFicha {
+  id_ficha?: number;
   numero_ficha: number;
   id_carrera: number;
 }
