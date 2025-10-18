@@ -1,0 +1,32 @@
+services:
+  eduaccess_db:
+    image: postgres
+    container_name: postgres_db
+    ports:
+      - '5432:5432'
+    volumes:
+      - eduaccessDBV:/var/lib/postgres/data
+      - ./database/:/docker-entrypoint-initdb.d
+    env_file:
+      - .env
+    networks:
+      - pgnet
+
+  eduaccess_pgadmin:
+    image: dpage/pgadmin4
+    container_name: pg_admin4
+    ports:
+      - '80:80'
+    env_file:
+      - .env
+    depends_on:
+      - eduaccess_db
+    networks:
+      - pgnet
+
+volumes:
+  eduaccessDBV:
+
+networks:
+  pgnet:
+    driver: bridge
