@@ -15,7 +15,7 @@ const char* WIFI_PASS = "1234567890101";
 
 // URL base de tu API NestJS (IP/puerto de tu servidor)
 // Ej: "http://172.22.129.50:3000"
-String API_BASE = "http://10.160.14.165:3000";
+String API_BASE = "http://10.160.14.190:3000";
 
 // Debe coincidir con process.env.DEVICE_KEY en tu backend NestJS
 String DEVICE_KEY = "a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8";
@@ -394,7 +394,7 @@ void handleDelete() {
   server.send(ok ? 200 : 500, "application/json", ok ? "{\"ok\":true}" : "{\"ok\":false}");
 }
 
-void handleFindFinger() {
+bool handleFindFinger() {
   int p;
   while ((p = finger.getImage()) != FINGERPRINT_OK) {
     if (p == FINGERPRINT_NOFINGER) {
@@ -403,6 +403,7 @@ void handleFindFinger() {
     }
     if (p == FINGERPRINT_IMAGEFAIL) {
       Serial.println("Error: fallo al capturar la imagen (IMAGEFAIL).");
+      return false;
     }
     Serial.print("getImage: error inesperado ");
     Serial.println(p);
@@ -412,28 +413,32 @@ void handleFindFinger() {
   if (p != FINGERPRINT_OK) {
     Serial.print("image2Tz fallo: ");
     Serial.println(p);
+    return false;
   }
 
   p = finger.fingerFastSearch();
   if (p == FINGERPRINT_OK) {
-    int foundID = finger.fingerID;
-    int conf = finger.confidence;
-    String response = "{\"ok\": \"success\",\"id_registro\" : " + String(foundID) + ",\"confianza\": " + String(conf) + "}";
-    
-    server.send(200, "application/json", response);
-    Serial.print("Huella encontrada! ID=");
-    Serial.print(foundID);
-    Serial.print("  Confianza=");
-    Serial.println(conf);
 
     Serial.println("Esperando a que se retire el dedo...");
     while (finger.getImage() == FINGERPRINT_OK) {
       delay(50);
     }
+
+    int foundID = finger.fingerID;
+    int conf = finger.confidence;
+    String response = "{\"ok\": \"success\",\"id_registro\" : " + String(foundID) + ",\"confianza\": " + String(conf) + "}";
+
+    server.send(200, "application/json", response);
+    Serial.print("Huella encontrada! ID=");
+    Serial.print(foundID);
+    Serial.print("  Confianza=");
+    Serial.println(conf);
+    return true;
   } else if (p == FINGERPRINT_NOTFOUND) {
       Serial.println("Huella no encontrada en la base de datos.");
       server.send(404, "aplication/json","{\"ok\": false, \"message\": \"No registrada\"}");
 
+      return false;
       Serial.println("Retira el dedo para continuar...");
       while (finger.getImage() == FINGERPRINT_OK) {
         delay(50);
@@ -441,6 +446,7 @@ void handleFindFinger() {
   } else {
       Serial.print("fingerFastSearch: error ");
       Serial.println(p);
+      return false;
     }
 }
 

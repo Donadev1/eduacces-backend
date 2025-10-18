@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, Post } from '@nestjs/common';
+import { Body, Controller, Delete, HttpCode, Post } from '@nestjs/common';
 import { HuellaService } from './huella.service';
 
 @Controller('huellas')

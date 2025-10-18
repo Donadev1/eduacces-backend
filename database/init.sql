@@ -195,3 +195,37 @@ ALTER TABLE IF EXISTS public.users
     ON DELETE NO ACTION;
 CREATE INDEX IF NOT EXISTS users_id_persona_key
     ON public.users(id_persona);
+
+-- Insercion de datos para pruebas
+insert into rol (id_rol, nombre) values (1, 'directora');
+insert into rol (id_rol, nombre) values (2, 'directivo');
+
+insert into persona (id_persona, documento, nombre, apellido, correo, telefono, id_rol)
+values (1, 113105025, 'Amii', 'Dot', 'adot0@webnode.com', 091214630, 1);
+
+insert into persona (id_persona, documento, nombre, apellido, correo, telefono, id_rol)
+values (2, 113105452, 'Binnie', 'Ponnsett', 'bponnsett1@quantcast.com', 104102781, 2);
+
+insert into persona (id_persona, documento, nombre, apellido, correo, telefono, id_rol)
+values (3, 071925376, 'Filberto', 'McDougald', 'fmcdougald2@rediff.com', 065502608, 1);
+
+insert into persona (id_persona, documento, nombre, apellido, correo, telefono, id_rol)
+values (4, 221270101, 'Milena', 'Royson', 'mroyson3@yolasite.com', 211574613, 2);
+
+insert into persona (id_persona, documento, nombre, apellido, correo, telefono, id_rol)
+values (5, 111323016, 'Izaak', 'Ritchings', 'iritchings4@webeden.co.uk', 091904270, 2);
+
+insert into persona (id_persona, documento, nombre, apellido, correo, telefono, id_rol)
+values (6, 122239843, 'Holly', 'Wincott', 'hwincott5@cdc.gov', 071905985, 1);
+
+insert into persona (id_persona, documento, nombre, apellido, correo, telefono, id_rol)
+values (7, 062003977, 'Cal', 'Edgecombe', 'cedgecombe6@friendfeed.com', 071924089, 2);
+
+insert into persona (id_persona, documento, nombre, apellido, correo, telefono, id_rol)
+values (8, 101101581, 'Aldric', 'Ludgrove', 'aludgrove7@discovery.com', 011100106, 2);
+
+insert into persona (id_persona, documento, nombre, apellido, correo, telefono, id_rol)
+values (9, 075911205, 'Berenice', 'Caunter', 'bcaunter8@bloglovin.com', 211070175, 2);
+
+insert into persona (id_persona, documento, nombre, apellido, correo, telefono, id_rol)
+values (10, 101206389, 'Joachim', 'Sadd', 'jsadd9@comsenz.com', 122243127, 1);

@@ -5,7 +5,7 @@ import axios from 'axios';
 @Injectable()
 export class SensorClientService {
   private readonly log = new Logger(SensorClientService.name);
-  private readonly base = process.env.SENSOR_BASE || 'http://172.22.129.27';
+  private readonly base = process.env.SENSOR_BASE;
 
   async enroll(id_persona: number): Promise<boolean> {
     const url = `${this.base}/sensor/enroll`;
@@ -23,6 +23,18 @@ export class SensorClientService {
       .catch((e) => ({ status: 0, data: { error: e?.message, ok: false } }));
     this.log.debug(`ESP32 -> ${resp.status} ${JSON.stringify(resp.data)}`);
     return resp.status >= 200 && resp.status < 300 && resp.data?.ok === true;
+  }
+
+  async find() {
+    const url = `${this.base}/sensor/test`;
+    const resp = await axios
+      .post(url, {
+        timeout: 2000,
+        validateStatus: () => true,
+      })
+      .catch((e) => ({ status: 0, data: { error: e?.message, ok: false } }));
+    this.log.log(`${JSON.stringify(resp.data)}`);
+    return resp.data;
   }
 
   async delete(id_persona: number): Promise<boolean> {

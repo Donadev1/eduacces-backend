@@ -9,7 +9,7 @@ import {
 import { persona } from './persona.model';
 
 interface asistenciaAttributes {
-  id_asistencia: number;
+  id_asistencia?: number;
   id_persona: number;
   fecha: Date;
   hora_entrada?: string;

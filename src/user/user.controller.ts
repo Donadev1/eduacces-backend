@@ -39,6 +39,7 @@ export class UserController {
   // Fin Metodos de mostrar Users
 
   // crear Users
+  // commenta los dos primeros decorators para que no se requiera autenticacion y asi crear un usuario nuevo
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('directivo')
   @Post()
