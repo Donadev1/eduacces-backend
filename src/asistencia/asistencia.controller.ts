@@ -10,4 +10,10 @@ export class AsistenciaController {
   test() {
     return this.service.registerAccess();
   }
+
+  @Post('salida')
+  @HttpCode(200)
+  registerExit() {
+    return this.service.marcarSalida('00:00');
+  }
 }

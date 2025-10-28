@@ -1,6 +1,6 @@
-// src/sensor/sensor.client.ts
 import { Injectable, Logger } from '@nestjs/common';
 import axios from 'axios';
+import { ResponseDtoRegister } from 'src/asistencia/dto/responser.dto.sensor';
 
 @Injectable()
 export class SensorClientService {
@@ -28,11 +28,12 @@ export class SensorClientService {
   async find() {
     const url = `${this.base}/sensor/test`;
     const resp = await axios
-      .post(url, {
+      .post<ResponseDtoRegister>(url, {
         timeout: 2000,
         validateStatus: () => true,
       })
-      .catch((e) => ({ status: 0, data: { error: e?.message, ok: false } }));
+      .then((r) => ({ status: 1, data: { ok: true, data: r.data } }))
+      .catch(() => ({ status: 0, data: { ok: false, data: {} } }));
     this.log.log(`${JSON.stringify(resp.data)}`);
     return resp.data;
   }

@@ -30,7 +30,7 @@ export class asistencia
     primaryKey: true,
     autoIncrement: true,
   })
-  id_asistencia!: number;
+  declare id_asistencia: number;
 
   @ForeignKey(() => persona)
   @Column({
