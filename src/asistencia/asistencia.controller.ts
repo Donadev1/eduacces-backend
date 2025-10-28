@@ -14,6 +14,6 @@ export class AsistenciaController {
   @Post('salida')
   @HttpCode(200)
   registerExit() {
-    return this.service.marcarSalida('00:00');
+    return this.service.marcarSalida();
   }
 }

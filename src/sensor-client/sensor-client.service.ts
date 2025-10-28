@@ -35,7 +35,7 @@ export class SensorClientService {
       .then((r) => ({ status: 1, data: { ok: true, data: r.data } }))
       .catch(() => ({ status: 0, data: { ok: false, data: {} } }));
     this.log.log(`${JSON.stringify(resp.data)}`);
-    return resp.data;
+    return JSON.parse(JSON.stringify(resp.data)) as ResponseDtoRegister;
   }
 
   async delete(id_persona: number): Promise<boolean> {

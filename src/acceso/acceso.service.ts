@@ -28,7 +28,6 @@ export class AccesoService {
 
     const id_persona = map.id_persona;
     const fecha = new Date();
-    const hora = this.ahora();
 
     const last = await this.asistenciaService.findLastOfDay(id_persona, fecha);
     if (!last) {
@@ -44,11 +43,11 @@ export class AccesoService {
     }
 
     if (!last.hora_salida) {
-      const row = await this.asistenciaService.marcarSalida(hora);
+      const row = await this.asistenciaService.marcarSalida();
       return {
         action: 'salida',
         id_persona,
-        id_asistencia: row?.id_asistencia,
+        id_asistencia: row?.data.id_asistencia,
         persona: map.persona
           ? { nombre: map.persona.nombre, apellido: map.persona.apellido }
           : undefined,
