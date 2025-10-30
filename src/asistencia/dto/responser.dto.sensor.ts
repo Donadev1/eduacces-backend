@@ -6,11 +6,7 @@ import {
   MinLength,
 } from 'class-validator';
 
-export class ResponseDtoRegister {
-  @IsNotEmpty()
-  @IsString()
-  ok: string;
-
+class DataDto {
   @IsNotEmpty()
   @IsInt()
   @MinLength(1)
@@ -21,5 +17,13 @@ export class ResponseDtoRegister {
   @IsInt()
   @MinLength(100)
   @MaxLength(200)
-  confiace: number;
+  confianza: number;
+}
+
+export class ResponseDtoRegister {
+  @IsNotEmpty()
+  @IsString()
+  ok: string;
+
+  data: DataDto;
 }

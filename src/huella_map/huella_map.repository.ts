@@ -13,13 +13,7 @@ export class HuellaMapRepository {
       include: [
         {
           model: persona,
-          attributes: [
-            'id_persona',
-            'nombre',
-            'apellido',
-            'documento',
-            'id_rol',
-          ],
+          attributes: ['id_persona', 'nombre', 'apellido', 'documento'],
         },
       ],
     });
@@ -57,4 +51,6 @@ export class HuellaMapRepository {
       raw: true,
     });
   }
+
+  // findPersonIdFromIdSensor(id_sensor)
 }

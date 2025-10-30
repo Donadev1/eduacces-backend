@@ -27,17 +27,11 @@ export class AccesoService {
     await this.huellaMapService.touchLastSeen(id_sensor);
 
     const id_persona = map.id_persona;
-    const fecha = this.hoyISO();
-    const hora = this.ahora();
+    const fecha = new Date();
 
     const last = await this.asistenciaService.findLastOfDay(id_persona, fecha);
-
     if (!last) {
-      const row = await this.asistenciaService.createEntrada(
-        id_persona,
-        fecha,
-        hora,
-      );
+      const row = await this.asistenciaService.createEntrada(id_persona, fecha);
       return {
         action: 'entrada',
         id_persona,
@@ -49,11 +43,11 @@ export class AccesoService {
     }
 
     if (!last.hora_salida) {
-      const row = await this.asistenciaService.marcarSalida(last, hora);
+      const row = await this.asistenciaService.marcarSalida();
       return {
         action: 'salida',
         id_persona,
-        id_asistencia: row.id_asistencia,
+        id_asistencia: row?.data.id_asistencia,
         persona: map.persona
           ? { nombre: map.persona.nombre, apellido: map.persona.apellido }
           : undefined,

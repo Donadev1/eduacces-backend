@@ -6,25 +6,26 @@ import { asistencia } from 'src/models/asistencia.model';
 export class AsistenciaRepository {
   constructor(@InjectModel(asistencia) private model: typeof asistencia) {}
 
-  findLastOfDay(id_persona: number, fechaISO: string) {
+  findLastOfDay(id_persona: number, fechaISO: Date) {
     return this.model.findOne({
       where: { id_persona, fecha: fechaISO },
       order: [['id_asistencia', 'DESC']],
     });
   }
 
-  createEntrada(id_persona: number, fechaISO: string, hora: string) {
+  createEntrada(id_persona: number, fechaISO: Date) {
     return this.model.create({
       id_persona,
       fecha: fechaISO,
-      hora_entrada: hora,
       estado: 'ENTRADA',
-    } as any);
+    });
   }
 
-  async marcarSalida(row: asistencia, hora: string) {
-    row.hora_salida = hora;
-    row.estado = 'SALIDA';
-    return row.save();
+  async marcarSalida(id_asistencia: number, hora: string) {
+    const [count, rows] = await this.model.update(
+      { hora_salida: hora, estado: 'SALIDA' },
+      { where: { id_asistencia }, returning: true },
+    );
+    return rows && rows[0] ? rows[0] : null;
   }
 }
