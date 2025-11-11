@@ -43,7 +43,12 @@ export class UsersRepository {
 
   findAll(): Promise<users[]> {
     return this.model.findAll({
-      attributes: ['id_user', 'correo', [col('persona.nombre'), 'persona']],
+      attributes: [
+        'id_user',
+        'correo',
+        'id_persona',
+        [col('persona.nombre'), 'persona'],
+      ],
       include: [{ model: persona, attributes: [] }],
       raw: true,
     });
