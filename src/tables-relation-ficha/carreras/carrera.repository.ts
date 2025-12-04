@@ -35,4 +35,8 @@ export class CarreraRepository {
       where: { id_carrera },
     });
   }
+
+  async metric_repository() {
+    return this.carrera.count();
+  }
 }

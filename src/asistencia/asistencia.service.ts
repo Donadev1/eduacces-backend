@@ -77,7 +77,6 @@ export class AsistenciaService {
   private async getAsistence() {
     try {
       const data = await this.sensorClient.find();
-
       if (!data || !data.data) {
         this.logger.warn('Respuesta inválida del sensor', JSON.stringify(data));
         throw new ServiceUnavailableException('Respuesta inválida del sensor');
@@ -86,7 +85,7 @@ export class AsistenciaService {
       // umbral de confianza (confianza es la precision al tomar el la foto)
       if (
         typeof data.data.confianza !== 'number' ||
-        data.data.confianza < 120
+        data.data.confianza <= 100
       ) {
         throw new BadRequestException('Confianza del sensor insuficiente');
       }

@@ -12,9 +12,6 @@ import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { JwtAuthGuard } from './guard/auth/auth.guard';
-// import { Roles } from './decorators/roles/roles.decorator';
-// import { RolesGuard } from './guard/roles/roles.guard';
-// import { RegisterTestDto } from './dto/register.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -33,4 +30,7 @@ export class AuthController {
   async me(@Req() req: any) {
     return this.auth.me(req.user);
   }
+
+  @Get('logout')
+  async logout() {}
 }

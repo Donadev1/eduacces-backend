@@ -15,7 +15,7 @@ class DataDto {
 
   @IsNotEmpty()
   @IsInt()
-  @MinLength(100)
+  @MinLength(40)
   @MaxLength(200)
   confianza: number;
 }

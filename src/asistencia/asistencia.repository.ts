@@ -22,10 +22,11 @@ export class AsistenciaRepository {
   }
 
   async marcarSalida(id_asistencia: number, hora: string) {
-    const [count, rows] = await this.model.update(
+    const [, rows] = await this.model.update(
       { hora_salida: hora, estado: 'SALIDA' },
       { where: { id_asistencia }, returning: true },
     );
+    console.log(rows);
     return rows && rows[0] ? rows[0] : null;
   }
 }
