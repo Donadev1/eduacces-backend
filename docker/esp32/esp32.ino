@@ -11,11 +11,11 @@
 
 // <<< EDITA ESTO >>>
 const char *WIFI_SSID = "Funcionarios";
-const char *WIFI_PASS = "SomosSena_2025*++*";
+const char *WIFI_PASS = "S0m0sS3n4_2025**";
 
 // URL base de tu API NestJS (IP/puerto de tu servidor)
 // Ej: "http://172.22.129.50:3000"
-String API_BASE = "http://10.2.126.96:3000";
+String API_BASE = "http://10.2.124.218:3000";
 
 // Debe coincidir con process.env.DEVICE_KEY en tu backend NestJS
 String DEVICE_KEY =
@@ -604,7 +604,7 @@ void setup() {
   // Enrolamiento sincrónico (útil para Postman)
   server.on("/sensor/enroll", handleEnrollSync);
   server.on("/sensor/delete", handleDelete);
-  server.on("/sensor/test", handleFindFinger);
+  server.on("/sensor/attendance", handleFindFinger);
   server.on("/sensor/clean", handleDeleteMemory);
 
   server.begin();

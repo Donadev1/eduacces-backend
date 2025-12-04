@@ -26,15 +26,14 @@ export class SensorClientService {
   }
 
   async find() {
-    const url = `${this.base}/sensor/test`;
+    const url = `${this.base}/sensor/attendance`;
     const resp = await axios
       .post<ResponseDtoRegister>(url, {
         timeout: 2000,
         validateStatus: () => true,
       })
-      .then((r) => ({ status: 1, data: { ok: true, data: r.data } }))
+      .then((r) => ({ status: 1, data: r.data }))
       .catch(() => ({ status: 0, data: { ok: false, data: {} } }));
-    this.log.log(`${JSON.stringify(resp.data)}`);
     return JSON.parse(JSON.stringify(resp.data)) as ResponseDtoRegister;
   }
 
