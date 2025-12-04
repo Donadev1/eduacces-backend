@@ -7,7 +7,7 @@ export class AsistenciaController {
 
   @Post()
   @HttpCode(200)
-  test() {
+  registerAccess() {
     return this.service.registerAccess();
   }
 

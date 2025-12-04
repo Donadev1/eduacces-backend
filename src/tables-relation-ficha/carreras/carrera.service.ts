@@ -31,4 +31,8 @@ export class CarreraService {
   async deleteCarrera(id_carrera: number) {
     return this.carreraRepository.remove(id_carrera);
   }
+
+  async metric_carrera() {
+    return this.carreraRepository.metric_repository();
+  }
 }

@@ -1,24 +1,25 @@
-#include <WiFi.h>
-#include <HTTPClient.h>
-#include <WebServer.h>
 #include <Adafruit_Fingerprint.h>
+#include <HTTPClient.h>
 #include <HardwareSerial.h>
+#include <WebServer.h>
+#include <WiFi.h>
 
 // ================== CONFIGURACIÓN ==================
-#define RX_PIN 16          // ESP32 RX2 (conectado a TX del AS608)
-#define TX_PIN 17          // ESP32 TX2 (conectado a RX del AS608)
-#define FINGER_BAUD 57600  // Velocidad del AS608
+#define RX_PIN 16         // ESP32 RX2 (conectado a TX del AS608)
+#define TX_PIN 17         // ESP32 TX2 (conectado a RX del AS608)
+#define FINGER_BAUD 57600 // Velocidad del AS608
 
 // <<< EDITA ESTO >>>
-const char* WIFI_SSID = "Funcionarios";
-const char* WIFI_PASS = "SomosSena_2025*++*";
+const char *WIFI_SSID = "Funcionarios";
+const char *WIFI_PASS = "S0m0sS3n4_2025**";
 
 // URL base de tu API NestJS (IP/puerto de tu servidor)
 // Ej: "http://172.22.129.50:3000"
-String API_BASE = "http://10.2.126.96:3000";
+String API_BASE = "http://10.2.124.218:3000";
 
 // Debe coincidir con process.env.DEVICE_KEY en tu backend NestJS
-String DEVICE_KEY = "a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8";
+String DEVICE_KEY =
+    "a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8";
 // ================== FIN CONFIG =====================
 
 // ================== GLOBALES ==================
@@ -31,10 +32,7 @@ unsigned long lastPostMs = 0;
 const unsigned long DEBOUNCE_MS = 2500;
 
 // Estado WiFi + eventos
-enum WifiState { WIFI_IDLE,
-                 WIFI_CONNECTING,
-                 WIFI_CONNECTED,
-                 WIFI_FAILED };
+enum WifiState { WIFI_IDLE, WIFI_CONNECTING, WIFI_CONNECTED, WIFI_FAILED };
 WifiState wifiState = WIFI_IDLE;
 unsigned long lastAttempt = 0;
 
@@ -54,40 +52,71 @@ enum EnrollStep {
 
 struct EnrollCtx {
   EnrollStep step = ENR_IDLE;
-  uint16_t slot = 0;  // id_persona (1..127)
-  int lastErr = 0;    // código de error del sensor (si aplica)
+  uint16_t slot = 0; // id_persona (1..127)
+  int lastErr = 0;   // código de error del sensor (si aplica)
   unsigned long stepStart = 0;
 } enr;
 
 // ================== HELPERS ==================
 void printFpCode(int code) {
   switch (code) {
-    case FINGERPRINT_OK: Serial.println("OK"); break;
-    case FINGERPRINT_NOFINGER: Serial.println("No hay dedo"); break;
-    case FINGERPRINT_IMAGEFAIL: Serial.println("Fallo al capturar imagen"); break;
-    case FINGERPRINT_IMAGEMESS: Serial.println("Imagen con ruido"); break;
-    case FINGERPRINT_FEATUREFAIL: Serial.println("No se pudieron extraer rasgos"); break;
-    case FINGERPRINT_INVALIDIMAGE: Serial.println("Imagen inválida"); break;
-    case FINGERPRINT_ENROLLMISMATCH: Serial.println("Las dos capturas no coinciden"); break;
-    case FINGERPRINT_BADLOCATION: Serial.println("Slot inválido"); break;
-    case FINGERPRINT_FLASHERR: Serial.println("Error al escribir memoria"); break;
-    case FINGERPRINT_PACKETRECIEVEERR: Serial.println("Error de comunicación"); break;
-    default: Serial.printf("Código: %d\n", code);
+  case FINGERPRINT_OK:
+    Serial.println("OK");
+    break;
+  case FINGERPRINT_NOFINGER:
+    Serial.println("No hay dedo");
+    break;
+  case FINGERPRINT_IMAGEFAIL:
+    Serial.println("Fallo al capturar imagen");
+    break;
+  case FINGERPRINT_IMAGEMESS:
+    Serial.println("Imagen con ruido");
+    break;
+  case FINGERPRINT_FEATUREFAIL:
+    Serial.println("No se pudieron extraer rasgos");
+    break;
+  case FINGERPRINT_INVALIDIMAGE:
+    Serial.println("Imagen inválida");
+    break;
+  case FINGERPRINT_ENROLLMISMATCH:
+    Serial.println("Las dos capturas no coinciden");
+    break;
+  case FINGERPRINT_BADLOCATION:
+    Serial.println("Slot inválido");
+    break;
+  case FINGERPRINT_FLASHERR:
+    Serial.println("Error al escribir memoria");
+    break;
+  case FINGERPRINT_PACKETRECIEVEERR:
+    Serial.println("Error de comunicación");
+    break;
+  default:
+    Serial.printf("Código: %d\n", code);
   }
 }
 
-const char* stepName(EnrollStep s) {
+const char *stepName(EnrollStep s) {
   switch (s) {
-    case ENR_IDLE: return "idle";
-    case ENR_WAIT_FINGER_1: return "place_1";
-    case ENR_CAPTURE_1: return "capture_1";
-    case ENR_WAIT_REMOVE: return "remove";
-    case ENR_WAIT_FINGER_2: return "place_2";
-    case ENR_CAPTURE_2: return "capture_2";
-    case ENR_CREATE_MODEL: return "creating";
-    case ENR_STORE_MODEL: return "storing";
-    case ENR_SUCCESS: return "success";
-    case ENR_ERROR: return "error";
+  case ENR_IDLE:
+    return "idle";
+  case ENR_WAIT_FINGER_1:
+    return "place_1";
+  case ENR_CAPTURE_1:
+    return "capture_1";
+  case ENR_WAIT_REMOVE:
+    return "remove";
+  case ENR_WAIT_FINGER_2:
+    return "place_2";
+  case ENR_CAPTURE_2:
+    return "capture_2";
+  case ENR_CREATE_MODEL:
+    return "creating";
+  case ENR_STORE_MODEL:
+    return "storing";
+  case ENR_SUCCESS:
+    return "success";
+  case ENR_ERROR:
+    return "error";
   }
   return "unknown";
 }
@@ -101,20 +130,24 @@ void setStep(EnrollStep s) {
 // Buscar huella → devuelve id_sensor (slot) o -1
 int buscarHuella() {
   int p = finger.getImage();
-  if (p != FINGERPRINT_OK) return -1;
+  if (p != FINGERPRINT_OK)
+    return -1;
 
   p = finger.image2Tz();
-  if (p != FINGERPRINT_OK) return -1;
+  if (p != FINGERPRINT_OK)
+    return -1;
 
   p = finger.fingerFastSearch();
-  if (p != FINGERPRINT_OK) return -1;
+  if (p != FINGERPRINT_OK)
+    return -1;
 
   return finger.fingerID;
 }
 
 // POST /acceso/evento con id_sensor
 bool postAccesoEvento(int idSensor) {
-  if (WiFi.status() != WL_CONNECTED) return false;
+  if (WiFi.status() != WL_CONNECTED)
+    return false;
 
   HTTPClient http;
   String url = API_BASE + "/acceso/evento";
@@ -133,108 +166,114 @@ bool postAccesoEvento(int idSensor) {
 }
 
 // Parseo simple de {"id_persona": N}
-int parseIdPersona(const String& json) {
+int parseIdPersona(const String &json) {
   int pos = json.indexOf("id_persona");
-  if (pos < 0) return -1;
+  if (pos < 0)
+    return -1;
   int colon = json.indexOf(':', pos);
-  if (colon < 0) return -1;
+  if (colon < 0)
+    return -1;
   int i = colon + 1;
-  while (i < (int)json.length() && (json[i] == ' ' || json[i] == '\t' || json[i] == '\"')) i++;
+  while (i < (int)json.length() &&
+         (json[i] == ' ' || json[i] == '\t' || json[i] == '\"'))
+    i++;
   String num;
-  while (i < (int)json.length() && isDigit(json[i])) num += json[i++];
+  while (i < (int)json.length() && isDigit(json[i]))
+    num += json[i++];
   return num.toInt();
 }
 
 // ================== ENROLL ASÍNCRONO ==================
 void tickEnroll() {
   switch (enr.step) {
-    case ENR_IDLE: return;
+  case ENR_IDLE:
+    return;
 
-    case ENR_WAIT_FINGER_1:
-      {
-        int p = finger.getImage();
-        if (p == FINGERPRINT_OK) setStep(ENR_CAPTURE_1);
-        else if (p == FINGERPRINT_IMAGEFAIL) {
-          enr.lastErr = p;
-          setStep(ENR_ERROR);
-        }
-        break;
-      }
+  case ENR_WAIT_FINGER_1: {
+    int p = finger.getImage();
+    if (p == FINGERPRINT_OK)
+      setStep(ENR_CAPTURE_1);
+    else if (p == FINGERPRINT_IMAGEFAIL) {
+      enr.lastErr = p;
+      setStep(ENR_ERROR);
+    }
+    break;
+  }
 
-    case ENR_CAPTURE_1:
-      {
-        int p = finger.image2Tz(1);
-        Serial.print("[ENR] image2Tz(1): ");
-        printFpCode(p);
-        if (p == FINGERPRINT_OK) setStep(ENR_WAIT_REMOVE);
-        else {
-          enr.lastErr = p;
-          setStep(ENR_ERROR);
-        }
-        break;
-      }
+  case ENR_CAPTURE_1: {
+    int p = finger.image2Tz(1);
+    Serial.print("[ENR] image2Tz(1): ");
+    printFpCode(p);
+    if (p == FINGERPRINT_OK)
+      setStep(ENR_WAIT_REMOVE);
+    else {
+      enr.lastErr = p;
+      setStep(ENR_ERROR);
+    }
+    break;
+  }
 
-    case ENR_WAIT_REMOVE:
-      {
-        int p = finger.getImage();
-        if (p == FINGERPRINT_NOFINGER) setStep(ENR_WAIT_FINGER_2);
-        break;
-      }
+  case ENR_WAIT_REMOVE: {
+    int p = finger.getImage();
+    if (p == FINGERPRINT_NOFINGER)
+      setStep(ENR_WAIT_FINGER_2);
+    break;
+  }
 
-    case ENR_WAIT_FINGER_2:
-      {
-        int p = finger.getImage();
-        if (p == FINGERPRINT_OK) setStep(ENR_CAPTURE_2);
-        else if (p == FINGERPRINT_IMAGEFAIL) {
-          enr.lastErr = p;
-          setStep(ENR_ERROR);
-        }
-        break;
-      }
+  case ENR_WAIT_FINGER_2: {
+    int p = finger.getImage();
+    if (p == FINGERPRINT_OK)
+      setStep(ENR_CAPTURE_2);
+    else if (p == FINGERPRINT_IMAGEFAIL) {
+      enr.lastErr = p;
+      setStep(ENR_ERROR);
+    }
+    break;
+  }
 
-    case ENR_CAPTURE_2:
-      {
-        int p = finger.image2Tz(2);
-        Serial.print("[ENR] image2Tz(2): ");
-        printFpCode(p);
-        if (p == FINGERPRINT_OK) setStep(ENR_CREATE_MODEL);
-        else {
-          enr.lastErr = p;
-          setStep(ENR_ERROR);
-        }
-        break;
-      }
+  case ENR_CAPTURE_2: {
+    int p = finger.image2Tz(2);
+    Serial.print("[ENR] image2Tz(2): ");
+    printFpCode(p);
+    if (p == FINGERPRINT_OK)
+      setStep(ENR_CREATE_MODEL);
+    else {
+      enr.lastErr = p;
+      setStep(ENR_ERROR);
+    }
+    break;
+  }
 
-    case ENR_CREATE_MODEL:
-      {
-        int p = finger.createModel();
-        Serial.print("[ENR] createModel: ");
-        printFpCode(p);
-        if (p == FINGERPRINT_OK) setStep(ENR_STORE_MODEL);
-        else {
-          enr.lastErr = p;
-          setStep(ENR_ERROR);
-        }
-        break;
-      }
+  case ENR_CREATE_MODEL: {
+    int p = finger.createModel();
+    Serial.print("[ENR] createModel: ");
+    printFpCode(p);
+    if (p == FINGERPRINT_OK)
+      setStep(ENR_STORE_MODEL);
+    else {
+      enr.lastErr = p;
+      setStep(ENR_ERROR);
+    }
+    break;
+  }
 
-    case ENR_STORE_MODEL:
-      {
-        int p = finger.storeModel(enr.slot);
-        Serial.print("[ENR] storeModel: ");
-        printFpCode(p);
-        if (p == FINGERPRINT_OK) setStep(ENR_SUCCESS);
-        else {
-          enr.lastErr = p;
-          setStep(ENR_ERROR);
-        }
-        break;
-      }
+  case ENR_STORE_MODEL: {
+    int p = finger.storeModel(enr.slot);
+    Serial.print("[ENR] storeModel: ");
+    printFpCode(p);
+    if (p == FINGERPRINT_OK)
+      setStep(ENR_SUCCESS);
+    else {
+      enr.lastErr = p;
+      setStep(ENR_ERROR);
+    }
+    break;
+  }
 
-    case ENR_SUCCESS:
-    case ENR_ERROR:
-      // Espera a que el backend consulte status o cancele
-      break;
+  case ENR_SUCCESS:
+  case ENR_ERROR:
+    // Espera a que el backend consulte status o cancele
+    break;
   }
 }
 
@@ -250,9 +289,7 @@ void handleRoot() {
               "POST /sensor/delete       {id_persona}\n");
 }
 
-void handlePing() {
-  server.send(200, "text/plain", "pong");
-}
+void handlePing() { server.send(200, "text/plain", "pong"); }
 
 // ---- Async ----
 void handleEnrollStart() {
@@ -267,7 +304,8 @@ void handleEnrollStart() {
   String body = server.arg("plain");
   int id = parseIdPersona(body);
   if (id < 1 || id > 127) {
-    server.send(400, "application/json", "{\"ok\":false,\"error\":\"slot 1..127\"}");
+    server.send(400, "application/json",
+                "{\"ok\":false,\"error\":\"slot 1..127\"}");
     return;
   }
 
@@ -278,10 +316,9 @@ void handleEnrollStart() {
 }
 
 void handleEnrollStatus() {
-  String json = String("{\"ok\":true,")
-                + "\"step\":\"" + String(stepName(enr.step)) + "\","
-                + "\"slot\":" + enr.slot + ","
-                + "\"error\":" + enr.lastErr + "}";
+  String json = String("{\"ok\":true,") + "\"step\":\"" +
+                String(stepName(enr.step)) + "\"," + "\"slot\":" + enr.slot +
+                "," + "\"error\":" + enr.lastErr + "}";
   server.send(200, "application/json", json);
 }
 
@@ -318,11 +355,13 @@ bool enrollAt(uint16_t id) {
   p = finger.image2Tz(1);
   Serial.print("image2Tz(1): ");
   printFpCode(p);
-  if (p != FINGERPRINT_OK) return false;
+  if (p != FINGERPRINT_OK)
+    return false;
 
   // Retirar
   Serial.println("Retira el dedo...");
-  while (finger.getImage() != FINGERPRINT_NOFINGER) delay(70);
+  while (finger.getImage() != FINGERPRINT_NOFINGER)
+    delay(70);
 
   // Captura 2
   Serial.println("Coloca el MISMO dedo (2/2)...");
@@ -336,18 +375,21 @@ bool enrollAt(uint16_t id) {
   p = finger.image2Tz(2);
   Serial.print("image2Tz(2): ");
   printFpCode(p);
-  if (p != FINGERPRINT_OK) return false;
+  if (p != FINGERPRINT_OK)
+    return false;
 
   // Modelo + guardar
   p = finger.createModel();
   Serial.print("createModel: ");
   printFpCode(p);
-  if (p != FINGERPRINT_OK) return false;
+  if (p != FINGERPRINT_OK)
+    return false;
 
   p = finger.storeModel(id);
   Serial.print("storeModel: ");
   printFpCode(p);
-  if (p != FINGERPRINT_OK) return false;
+  if (p != FINGERPRINT_OK)
+    return false;
 
   Serial.println("✅ Huella enrolada y guardada con éxito");
   return true;
@@ -365,7 +407,8 @@ void handleEnrollSync() {
   String body = server.arg("plain");
   int id = parseIdPersona(body);
   if (id < 1 || id > 127) {
-    server.send(400, "application/json", "{\"ok\":false,\"error\":\"slot 1..127\"}");
+    server.send(400, "application/json",
+                "{\"ok\":false,\"error\":\"slot 1..127\"}");
     return;
   }
 
@@ -386,12 +429,14 @@ void handleDelete() {
   String body = server.arg("plain");
   int id = parseIdPersona(body);
   if (id < 1 || id > 127) {
-    server.send(400, "application/json", "{\"ok\":false,\"error\":\"slot 1..127\"}");
+    server.send(400, "application/json",
+                "{\"ok\":false,\"error\":\"slot 1..127\"}");
     return;
   }
 
   bool ok = deleteSlot(id);
-  server.send(ok ? 200 : 500, "application/json", ok ? "{\"ok\":true}" : "{\"ok\":false}");
+  server.send(ok ? 200 : 500, "application/json",
+              ok ? "{\"ok\":true}" : "{\"ok\":false}");
 }
 
 bool handleFindFinger() {
@@ -426,7 +471,10 @@ bool handleFindFinger() {
 
     int foundID = finger.fingerID;
     int conf = finger.confidence;
-    String response = "{\"ok\": \"success\",\"id_registro\" : " + String(foundID) + ",\"confianza\": " + String(conf) + "}";
+    String response = String("{\"ok\":\"success\",\"data\":{") +
+                  "\"id_registro\":" + String(foundID) + "," +
+                  "\"confianza\":" + String(conf) +
+                  "}}";
 
     server.send(200, "application/json", response);
     Serial.print("Huella encontrada! ID=");
@@ -435,19 +483,20 @@ bool handleFindFinger() {
     Serial.println(conf);
     return true;
   } else if (p == FINGERPRINT_NOTFOUND) {
-      Serial.println("Huella no encontrada en la base de datos.");
-      server.send(404, "aplication/json","{\"ok\": false, \"message\": \"No registrada\"}");
+    Serial.println("Huella no encontrada en la base de datos.");
+    server.send(404, "aplication/json",
+                "{\"ok\": false, \"message\": \"No registrada\"}");
 
-      return false;
-      Serial.println("Retira el dedo para continuar...");
-      while (finger.getImage() == FINGERPRINT_OK) {
-        delay(50);
-      }
-  } else {
-      Serial.print("fingerFastSearch: error ");
-      Serial.println(p);
-      return false;
+    return false;
+    Serial.println("Retira el dedo para continuar...");
+    while (finger.getImage() == FINGERPRINT_OK) {
+      delay(50);
     }
+  } else {
+    Serial.print("fingerFastSearch: error ");
+    Serial.println(p);
+    return false;
+  }
 }
 
 void handleDeleteMemory() {
@@ -461,23 +510,30 @@ void handleDeleteMemory() {
 // ================== WiFi (eventos para ESP32 core v2.x) ==================
 void onWiFiEvent(WiFiEvent_t event, WiFiEventInfo_t info) {
   switch (event) {
-    case WIFI_EVENT_STA_START: Serial.println("[WiFi] STA_START"); break;
-    case WIFI_EVENT_STA_CONNECTED: Serial.println("[WiFi] CONNECTED"); break;
-    case IP_EVENT_STA_GOT_IP:
-      Serial.print("[WiFi] GOT_IP: ");
-      Serial.println(WiFi.localIP());
-      wifiState = WIFI_CONNECTED;
-      break;
-    case WIFI_EVENT_STA_DISCONNECTED:
-      Serial.printf("[WiFi] DISCONNECTED, reason=%d\n", info.wifi_sta_disconnected.reason);
-      wifiState = WIFI_FAILED;
-      break;
-    default: break;
+  case WIFI_EVENT_STA_START:
+    Serial.println("[WiFi] STA_START");
+    break;
+  case WIFI_EVENT_STA_CONNECTED:
+    Serial.println("[WiFi] CONNECTED");
+    break;
+  case IP_EVENT_STA_GOT_IP:
+    Serial.print("[WiFi] GOT_IP: ");
+    Serial.println(WiFi.localIP());
+    wifiState = WIFI_CONNECTED;
+    break;
+  case WIFI_EVENT_STA_DISCONNECTED:
+    Serial.printf("[WiFi] DISCONNECTED, reason=%d\n",
+                  info.wifi_sta_disconnected.reason);
+    wifiState = WIFI_FAILED;
+    break;
+  default:
+    break;
   }
 }
 
 void beginWiFiOnce() {
-  if (wifiState == WIFI_CONNECTING) return;
+  if (wifiState == WIFI_CONNECTING)
+    return;
   wifiState = WIFI_CONNECTING;
 
   WiFi.mode(WIFI_STA);
@@ -503,12 +559,14 @@ void connectWiFi() {
     Serial.print("WiFi OK. IP: ");
     Serial.println(WiFi.localIP());
   } else {
-    Serial.println("No se pudo conectar a WiFi. Continuando en modo offline...");
+    Serial.println(
+        "No se pudo conectar a WiFi. Continuando en modo offline...");
   }
 }
 
 void maintainWiFi() {
-  if (wifiState == WIFI_CONNECTED) return;
+  if (wifiState == WIFI_CONNECTED)
+    return;
   if (wifiState == WIFI_FAILED || wifiState == WIFI_IDLE) {
     Serial.println("[WiFi] Reintentando conexión...");
     beginWiFiOnce();
@@ -546,7 +604,7 @@ void setup() {
   // Enrolamiento sincrónico (útil para Postman)
   server.on("/sensor/enroll", handleEnrollSync);
   server.on("/sensor/delete", handleDelete);
-  server.on("/sensor/test", handleFindFinger);
+  server.on("/sensor/attendance", handleFindFinger);
   server.on("/sensor/clean", handleDeleteMemory);
 
   server.begin();
@@ -566,7 +624,7 @@ void loop() {
     Serial.printf("✅ Huella reconocida → slot #%d\n", id);
     unsigned long now = millis();
     if (now - lastPostMs > DEBOUNCE_MS) {
-      postAccesoEvento(id);  // POST a tu API /acceso/evento
+      postAccesoEvento(id); // POST a tu API /acceso/evento
       lastPostMs = now;
     }
     delay(800);

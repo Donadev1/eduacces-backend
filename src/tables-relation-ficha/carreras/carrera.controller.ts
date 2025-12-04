@@ -14,10 +14,16 @@ import { Roles } from 'src/auth/decorators/roles/roles.decorator';
 import { Carrera } from 'src/models/carrera.model';
 import { JwtAuthGuard } from 'src/auth/guard/auth/auth.guard';
 import { RolesGuard } from 'src/auth/guard/roles/roles.guard';
+import { UpdateCarreraDto } from './dto/update.carrera';
 
 @Controller('carreras')
 export class CarreraController {
   constructor(private carreraService: CarreraService) {}
+
+  @Get('metrica')
+  async metric() {
+    return this.carreraService.metric_carrera();
+  }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('directivo')
@@ -45,7 +51,7 @@ export class CarreraController {
   @Put(':id_carrera')
   async Update(
     @Param('id_carrera', ParseIntPipe) id_carrera: number,
-    @Body() dto: Carrera,
+    @Body() dto: UpdateCarreraDto,
   ) {
     return this.carreraService.updateCarrera(id_carrera, dto);
   }
