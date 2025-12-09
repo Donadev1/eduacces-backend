@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { asistencia } from 'src/models/asistencia.model';
+import { Asistencia } from 'src/models/asistencia.model';
 
 @Injectable()
 export class AsistenciaRepository {
-  constructor(@InjectModel(asistencia) private model: typeof asistencia) {}
+  constructor(@InjectModel(Asistencia) private model: typeof Asistencia) {}
 
   findLastOfDay(id_persona: number, fechaISO: Date) {
     return this.model.findOne({

@@ -8,7 +8,7 @@ import {
   Table,
 } from 'sequelize-typescript';
 
-import { persona } from './persona.model';
+import { Persona } from './persona.model';
 
 interface HuellaMapAttributes {
   id_sensor: number;
@@ -30,13 +30,13 @@ export class HuellaMap
 {
   @Column({ primaryKey: true, autoIncrement: true })
   declare id_sensor: number;
-  @ForeignKey(() => persona)
+  @ForeignKey(() => Persona)
   declare id_persona: number;
   @Column({ type: DataType.DATE, allowNull: false })
   declare fecha_registro: Date;
   @Column({ type: DataType.DATE, allowNull: true })
   declare last_seen: Date;
 
-  @BelongsTo(() => persona, { foreignKey: 'id_persona', as: 'persona' })
-  declare persona?: persona;
+  @BelongsTo(() => Persona, { foreignKey: 'id_persona', as: 'persona' })
+  declare persona?: Persona;
 }

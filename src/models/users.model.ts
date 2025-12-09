@@ -7,9 +7,9 @@ import {
   Model,
   BelongsTo,
 } from 'sequelize-typescript';
-import { persona } from './persona.model';
+import { Persona } from './persona.model';
 
-interface usersAttributtes {
+interface UsersAttributtes {
   id_user: number;
   correo: string;
   password: string;
@@ -17,16 +17,16 @@ interface usersAttributtes {
   estado?: boolean;
 }
 
-interface usersCreationAttributes
-  extends Optional<usersAttributtes, 'id_user'> {}
+interface UsersCreationAttributes
+  extends Optional<UsersAttributtes, 'id_user'> {}
 
 @Table({
   tableName: 'users',
   timestamps: false,
 })
-export class users
-  extends Model<usersAttributtes, usersCreationAttributes>
-  implements usersAttributtes
+export class Users
+  extends Model<UsersAttributtes, UsersCreationAttributes>
+  implements UsersAttributtes
 {
   @Column({ type: DataType.INTEGER, primaryKey: true, autoIncrement: true })
   declare id_user: number;
@@ -36,13 +36,13 @@ export class users
   @Column({ type: DataType.STRING(100), allowNull: false })
   declare password: string;
 
-  @ForeignKey(() => persona)
+  @ForeignKey(() => Persona)
   @Column({ type: DataType.INTEGER, allowNull: false })
   declare id_persona: number;
 
   @Column({ type: DataType.BOOLEAN, allowNull: true, defaultValue: false })
   declare estado?: boolean;
 
-  @BelongsTo(() => persona, { as: 'persona' })
-  declare persona?: persona;
+  @BelongsTo(() => Persona, { as: 'persona' })
+  declare persona?: Persona;
 }

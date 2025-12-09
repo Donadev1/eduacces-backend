@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Carrera } from 'src/models/carrera.model';
 import { EstudianteFicha } from 'src/models/estudiante-ficha.model';
 import { Ficha } from 'src/models/ficha.model';
-import { persona } from 'src/models/persona.model';
+import { Persona } from 'src/models/persona.model';
 
 @Injectable()
 export class EstudianteFichaService {
@@ -27,7 +27,7 @@ export class EstudianteFichaService {
             { model: Carrera, attributes: { exclude: ['id_carrera'] } },
           ],
         },
-        { model: persona, attributes: { exclude: ['id_persona', 'id_rol'] } },
+        { model: Persona, attributes: { exclude: ['id_persona', 'id_rol'] } },
       ],
     });
   }
@@ -45,7 +45,7 @@ export class EstudianteFichaService {
             { model: Carrera, attributes: { exclude: ['id_carrera'] } },
           ],
         },
-        { model: persona, attributes: { exclude: ['id_persona', 'id_rol'] } },
+        { model: Persona, attributes: { exclude: ['id_persona', 'id_rol'] } },
       ],
     });
   }

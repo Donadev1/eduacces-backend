@@ -1,7 +1,7 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { persona } from 'src/models/persona.model';
-import { rol } from 'src/models/rol.model';
+import { Persona } from 'src/models/persona.model';
+import { Rol } from 'src/models/rol.model';
 import { PersonaRepository } from './persona.repository';
 import { PersonaService } from './persona.service';
 import { PersonaController } from './persona.controller';
@@ -13,7 +13,7 @@ import { HuellaMapModule } from 'src/huella_map/huella_map.module';
 
 @Module({
   imports: [
-    SequelizeModule.forFeature([persona, rol, HuellaMap]),
+    SequelizeModule.forFeature([Persona, Rol, HuellaMap]),
     forwardRef(() => AuthModule),
     forwardRef(() => HuellaMapModule),
     HuellaMapModule,

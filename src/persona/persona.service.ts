@@ -2,7 +2,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PersonaRepository } from './persona.repository';
 import { CreatePersonaDto } from './dto/create.persona.dto';
-import { persona } from 'src/models/persona.model';
+import { Persona } from 'src/models/persona.model';
 import { UpdatePersonaDto } from './dto/update.persona.dto';
 import { SensorClientService } from 'src/sensor-client/sensor-client.service';
 import { HuellaMapService } from 'src/huella_map/huella_map.service';
@@ -15,11 +15,11 @@ export class PersonaService {
     private readonly huellaMapService: HuellaMapService,
   ) {}
 
-  async findAll(): Promise<persona[]> {
+  async findAll(): Promise<Persona[]> {
     return this.personaRepository.findAll();
   }
 
-  async findById(id_persona: number): Promise<persona> {
+  async findById(id_persona: number): Promise<Persona> {
     const user = await this.personaRepository.findById(id_persona);
     if (!user) {
       throw new NotFoundException(`Usuario con ID ${id_persona} no encontrado`);
@@ -38,7 +38,7 @@ export class PersonaService {
     }
   }
 
-  async create(createpersona: CreatePersonaDto): Promise<persona> {
+  async create(createpersona: CreatePersonaDto): Promise<Persona> {
     try {
       const ExistingPersona = await this.findByDocumento(
         createpersona.documento,
@@ -57,7 +57,7 @@ export class PersonaService {
   async update(
     id_persona: number,
     updatepersona: UpdatePersonaDto,
-  ): Promise<persona | null> {
+  ): Promise<Persona | null> {
     try {
       const exisnting = await this.findById(id_persona);
       if (!exisnting) {

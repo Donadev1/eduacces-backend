@@ -9,11 +9,11 @@ import {
   HasOne,
   HasMany,
 } from 'sequelize-typescript';
-import { rol } from './rol.model';
+import { Rol } from './rol.model';
 import { HuellaMap } from './hulla_map';
-import { asistencia } from './asistencia.model';
+import { Asistencia } from './asistencia.model';
 
-interface personaAttributes {
+interface PersonaAttributes {
   id_persona: number;
   documento: string;
   nombre: string;
@@ -23,16 +23,16 @@ interface personaAttributes {
   id_rol: number;
 }
 
-interface personaCreationAttributes
-  extends Optional<personaAttributes, 'id_persona'> {}
+interface PersonaCreationAttributes
+  extends Optional<PersonaAttributes, 'id_persona'> {}
 
 @Table({
   tableName: 'persona',
   timestamps: false,
 })
-export class persona
-  extends Model<personaAttributes, personaCreationAttributes>
-  implements personaAttributes
+export class Persona
+  extends Model<PersonaAttributes, PersonaCreationAttributes>
+  implements PersonaAttributes
 {
   @Column({ type: DataType.INTEGER, primaryKey: true, autoIncrement: true })
   declare id_persona: number;
@@ -52,16 +52,16 @@ export class persona
   @Column({ type: DataType.STRING(20), allowNull: true })
   declare telefono?: string;
 
-  @ForeignKey(() => rol)
+  @ForeignKey(() => Rol)
   @Column({ type: DataType.INTEGER, allowNull: false })
   declare id_rol: number;
 
-  @BelongsTo(() => rol, { as: 'rol', foreignKey: 'id_rol' })
-  declare rol?: rol;
+  @BelongsTo(() => Rol, { as: 'rol', foreignKey: 'id_rol' })
+  declare rol?: Rol;
 
   @HasOne(() => HuellaMap, { foreignKey: 'id_persona' })
   declare huella_map?: HuellaMap;
 
-  @HasMany(() => asistencia, { foreignKey: 'id_persona' })
-  declare asistencias?: asistencia[];
+  @HasMany(() => Asistencia, { foreignKey: 'id_persona' })
+  declare asistencias?: Asistencia[];
 }

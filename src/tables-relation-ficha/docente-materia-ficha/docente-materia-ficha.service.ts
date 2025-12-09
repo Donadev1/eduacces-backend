@@ -4,7 +4,7 @@ import { Carrera } from 'src/models/carrera.model';
 import { DocenteMateriaFicha } from 'src/models/docente-materia-ficha.model';
 import { Ficha } from 'src/models/ficha.model';
 import { Materias } from 'src/models/materias.model';
-import { persona } from 'src/models/persona.model';
+import { Persona } from 'src/models/persona.model';
 
 @Injectable()
 export class DocenteMateriaFichaService {
@@ -34,7 +34,7 @@ export class DocenteMateriaFichaService {
             { model: Carrera, attributes: { exclude: ['id_carrera'] } },
           ],
         },
-        { model: persona, attributes: { exclude: ['id_persona', 'id_rol'] } },
+        { model: Persona, attributes: { exclude: ['id_persona', 'id_rol'] } },
         { model: Materias, attributes: { exclude: ['id_materia'] } },
       ],
     });
@@ -61,7 +61,7 @@ export class DocenteMateriaFichaService {
             { model: Carrera, attributes: { exclude: ['id_carrera'] } },
           ],
         },
-        { model: persona, attributes: { exclude: ['id_persona', 'id_rol'] } },
+        { model: Persona, attributes: { exclude: ['id_persona', 'id_rol'] } },
         { model: Materias, attributes: { exclude: ['id_materia'] } },
       ],
     });

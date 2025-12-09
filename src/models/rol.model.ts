@@ -1,21 +1,21 @@
 import { Optional } from 'sequelize';
 import { Column, DataType, HasMany, Model, Table } from 'sequelize-typescript';
-import { persona } from './persona.model';
+import { Persona } from './persona.model';
 
-interface rolAttributes {
+interface RolAttributes {
   id_rol: number;
   nombre: string;
 }
 
-interface rolCreationAttributes extends Optional<rolAttributes, 'id_rol'> {}
+interface RolCreationAttributes extends Optional<RolAttributes, 'id_rol'> {}
 
 @Table({
   tableName: 'rol',
   timestamps: false,
 })
-export class rol
-  extends Model<rolAttributes, rolCreationAttributes>
-  implements rolAttributes
+export class Rol
+  extends Model<RolAttributes, RolCreationAttributes>
+  implements RolAttributes
 {
   @Column({ type: DataType.INTEGER, primaryKey: true, autoIncrement: true })
   declare id_rol: number;
@@ -23,6 +23,6 @@ export class rol
   @Column({ type: DataType.STRING(50), allowNull: false })
   declare nombre: string;
 
-  @HasMany(() => persona, { foreignKey: 'id_rol', as: 'personas' })
-  declare personas?: persona[];
+  @HasMany(() => Persona, { foreignKey: 'id_rol', as: 'personas' })
+  declare personas?: Persona[];
 }
