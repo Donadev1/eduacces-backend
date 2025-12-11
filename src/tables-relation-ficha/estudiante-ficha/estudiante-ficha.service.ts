@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { FindOptions } from 'sequelize';
 import { Carrera } from 'src/models/carrera.model';
 import { EstudianteFicha } from 'src/models/estudiante-ficha.model';
 import { Ficha } from 'src/models/ficha.model';
@@ -12,24 +13,12 @@ export class EstudianteFichaService {
     private readonly model: typeof EstudianteFicha,
   ) {}
 
-  async findAll(): Promise<EstudianteFicha[]> {
-    return this.model.findAll({
-      attributes: {
-        exclude: ['id_estudiante_ficha', 'id_persona', 'id_ficha'],
-      },
-      include: [
-        {
-          model: Ficha,
-          attributes: {
-            exclude: ['id_ficha', 'id_carrera'],
-          },
-          include: [
-            { model: Carrera, attributes: { exclude: ['id_carrera'] } },
-          ],
-        },
-        { model: Persona, attributes: { exclude: ['id_persona', 'id_rol'] } },
-      ],
-    });
+  async countAll() {
+    return this.model.count();
+  }
+
+  async findAll(options: FindOptions = {}) {
+    return this.model.findAll(options);
   }
 
   async findOne(id_estudiante_ficha: number): Promise<EstudianteFicha | null> {

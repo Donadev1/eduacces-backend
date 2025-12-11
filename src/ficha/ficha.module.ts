@@ -9,6 +9,6 @@ import { FichaController } from './ficha.controller';
   imports: [SequelizeModule.forFeature([Ficha])],
   providers: [FichaRepository, FichaService],
   controllers: [FichaController],
-  exports: [FichaRepository, FichaService],
+  exports: [FichaService, FichaRepository],
 })
 export class FichaModule {}

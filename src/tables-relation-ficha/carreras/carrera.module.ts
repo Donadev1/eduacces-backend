@@ -9,6 +9,6 @@ import { Carrera } from 'src/models/carrera.model';
   imports: [SequelizeModule.forFeature([Carrera])],
   providers: [CarreraRepository, CarreraService],
   controllers: [CarreraController],
-  exports: [CarreraRepository, CarreraService],
+  exports: [CarreraService],
 })
 export class CarreraModule {}

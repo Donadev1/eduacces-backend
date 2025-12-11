@@ -14,6 +14,10 @@ import { JwtAuthGuard } from 'src/auth/guard/auth/auth.guard';
 import { Roles } from 'src/auth/decorators/roles/roles.decorator';
 import { RolesGuard } from 'src/auth/guard/roles/roles.guard';
 import { EstudianteFicha } from 'src/models/estudiante-ficha.model';
+import { FindOptions } from 'sequelize';
+import { Ficha } from 'src/models/ficha.model';
+import { Carrera } from 'src/models/carrera.model';
+import { Persona } from 'src/models/persona.model';
 
 @Controller('estudiante-ficha')
 export class EstudianteFichaController {
@@ -21,9 +25,33 @@ export class EstudianteFichaController {
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('directivo')
+  @Get('metrics')
+  getMetrics() {
+    return this.service.countAll();
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('directivo')
   @Get()
   getAll() {
-    return this.service.findAll();
+    const options: FindOptions = {
+      attributes: {
+        exclude: ['id_persona', 'id_ficha'],
+      },
+      include: [
+        {
+          model: Ficha,
+          attributes: {
+            exclude: ['id_ficha', 'id_carrera'],
+          },
+          include: [
+            { model: Carrera, attributes: { exclude: ['id_carrera'] } },
+          ],
+        },
+        { model: Persona, attributes: { exclude: ['id_persona', 'id_rol'] } },
+      ],
+    };
+    return this.service.findAll(options);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)

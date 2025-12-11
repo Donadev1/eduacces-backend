@@ -7,6 +7,11 @@ import { Rol } from 'src/models/rol.model';
 import { Users } from 'src/models/users.model';
 import { HuellaMap } from 'src/models/hulla_map';
 import { Asistencia } from 'src/models/asistencia.model';
+import { DocenteMateriaFicha } from 'src/models/docente-materia-ficha.model';
+import { EstudianteFicha } from 'src/models/estudiante-ficha.model';
+import { Materias } from 'src/models/materias.model';
+import { Carrera } from 'src/models/carrera.model';
+import { Ficha } from 'src/models/ficha.model';
 
 @Module({
   imports: [
@@ -28,7 +33,18 @@ import { Asistencia } from 'src/models/asistencia.model';
           password: configService.get<string>('database.password'),
           database: configService.get<string>('database.database'),
           autoLoadModels: true,
-          models: [Persona, Rol, Users, HuellaMap, Asistencia],
+          models: [
+            Persona,
+            Rol,
+            Users,
+            HuellaMap,
+            Asistencia,
+            Ficha,
+            Carrera,
+            DocenteMateriaFicha,
+            EstudianteFicha,
+            Materias,
+          ],
           synchronize: false,
         };
       },

@@ -8,5 +8,6 @@ import { Materias } from 'src/models/materias.model';
   imports: [SequelizeModule.forFeature([Materias])],
   controllers: [MateriaController],
   providers: [MateriaService],
+  exports: [MateriaService],
 })
 export class MateriaModule {}

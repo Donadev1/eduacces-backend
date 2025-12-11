@@ -20,6 +20,10 @@ export class AsistenciaService {
     private readonly huella_map_service: HuellaMapService,
   ) {}
 
+  async findByPk(id_persona: number) {
+    return this.asistenciaRepository.findByPk(id_persona);
+  }
+
   findLastOfDay(id_persona: number, fechaISO: Date) {
     return this.asistenciaRepository.findLastOfDay(id_persona, fechaISO);
   }

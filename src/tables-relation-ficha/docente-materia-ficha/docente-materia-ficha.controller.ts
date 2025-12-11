@@ -14,6 +14,11 @@ import { DocenteMateriaFicha } from 'src/models/docente-materia-ficha.model';
 import { JwtAuthGuard } from 'src/auth/guard/auth/auth.guard';
 import { RolesGuard } from 'src/auth/guard/roles/roles.guard';
 import { Roles } from 'src/auth/decorators/roles/roles.decorator';
+import { Ficha } from 'src/models/ficha.model';
+import { Carrera } from 'src/models/carrera.model';
+import { Persona } from 'src/models/persona.model';
+import { Materias } from 'src/models/materias.model';
+import { FindOptions } from 'sequelize';
 
 @Controller('docente-ficha')
 export class DocenteMateriaFichaController {
@@ -21,9 +26,16 @@ export class DocenteMateriaFichaController {
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('directivo')
+  @Get('metrics')
+  getMetrics() {
+    return this.service.metrics();
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('directivo')
   @Get()
   getAll() {
-    return this.service.findAll();
+    return this.service.findAll({});
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)

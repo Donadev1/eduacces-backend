@@ -1,6 +1,7 @@
 import { InjectModel } from '@nestjs/sequelize';
 import { CreateOptions, UpdateOptions } from 'sequelize';
 import { AtributtesCarrera, Carrera } from 'src/models/carrera.model';
+import { ResponseGeneral, TypeDataMetrics } from 'src/models/response.general';
 
 export class CarreraRepository {
   constructor(
@@ -37,6 +38,15 @@ export class CarreraRepository {
   }
 
   async metric_repository() {
-    return this.carrera.count();
+    const data = await this.carrera.count();
+
+    const response: ResponseGeneral<TypeDataMetrics> = {
+      success: true,
+      data: {
+        count: data,
+      },
+    };
+
+    return response;
   }
 }

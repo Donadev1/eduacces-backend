@@ -20,7 +20,9 @@ import { UpdateCarreraDto } from './dto/update.carrera';
 export class CarreraController {
   constructor(private carreraService: CarreraService) {}
 
-  @Get('metrica')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('directivo')
+  @Get('metrics')
   async metric() {
     return this.carreraService.metric_carrera();
   }
