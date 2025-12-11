@@ -5,14 +5,9 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  UnauthorizedException,
-  UseGuards,
 } from '@nestjs/common';
 import { AccesoService } from './acceso.service';
 import { EventoAccesoDto } from './dto/EventoAccesoDto';
-import { Roles } from 'src/auth/decorators/roles/roles.decorator';
-import { JwtAuthGuard } from 'src/auth/guard/auth/auth.guard';
-import { RolesGuard } from 'src/auth/guard/roles/roles.guard';
 
 @Controller('acceso')
 export class AccesoController {

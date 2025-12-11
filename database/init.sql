@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS public.asistencia
     id_asistencia serial NOT NULL,
     id_persona integer NOT NULL,
     fecha date NOT NULL DEFAULT CURRENT_DATE,
-    hora_entrada time without time zone,
+    hora_entrada time without time zone CURRENT_TIMESTAMP,
     hora_salida time without time zone,
     estado character varying(20) COLLATE pg_catalog."default",
     CONSTRAINT asistencia_pkey PRIMARY KEY (id_asistencia)

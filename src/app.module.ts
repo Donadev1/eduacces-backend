@@ -17,6 +17,7 @@ import { FichaModule } from './ficha/ficha.module';
 import { MateriaModule } from './tables-relation-ficha/materias/materias.module';
 import { DocenteMateriaFichaModule } from './tables-relation-ficha/docente-materia-ficha/docente-materia-ficha.module';
 import { EstudianteFichaModule } from './tables-relation-ficha/estudiante-ficha/estudiante-ficha.module';
+import { RelationsClassModule } from './tables-relation-ficha/relations-class/relations-class.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { EstudianteFichaModule } from './tables-relation-ficha/estudiante-ficha/
     MateriaModule,
     DocenteMateriaFichaModule,
     EstudianteFichaModule,
+    RelationsClassModule,
   ],
   controllers: [AppController, FichaController],
   providers: [AppService, SensorClientService, FichaService],

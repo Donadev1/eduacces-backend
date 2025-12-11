@@ -1,10 +1,39 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { asistencia } from 'src/models/asistencia.model';
+import { Asistencia } from 'src/models/asistencia.model';
+import { Persona } from 'src/models/persona.model';
 
 @Injectable()
 export class AsistenciaRepository {
-  constructor(@InjectModel(asistencia) private model: typeof asistencia) {}
+  constructor(@InjectModel(Asistencia) private model: typeof Asistencia) {}
+
+  async findByPk(id_asistencia: number) {
+    const data = await this.model.findByPk(id_asistencia, {
+      attributes: {
+        exclude: ['id_asistencia', 'id_persona'],
+      },
+      include: [
+        {
+          model: Persona,
+          attributes: {
+            exclude: ['id_persona', 'id_rol', 'correo', 'telefono'],
+          },
+        },
+      ],
+    });
+    if (data) {
+      const response = '{"ok": true, "data": '.concat(
+        JSON.stringify(data).concat('}'),
+      );
+      return response;
+    } else {
+      const response = {
+        ok: false,
+        data: {},
+      };
+      return JSON.stringify(response);
+    }
+  }
 
   findLastOfDay(id_persona: number, fechaISO: Date) {
     return this.model.findOne({
@@ -22,11 +51,10 @@ export class AsistenciaRepository {
   }
 
   async marcarSalida(id_asistencia: number, hora: string) {
-    const [, rows] = await this.model.update(
+    const [affected, rows] = await this.model.update(
       { hora_salida: hora, estado: 'SALIDA' },
       { where: { id_asistencia }, returning: true },
     );
-    console.log(rows);
     return rows && rows[0] ? rows[0] : null;
   }
 }

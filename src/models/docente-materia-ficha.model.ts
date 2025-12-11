@@ -6,7 +6,7 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
-import { persona } from './persona.model';
+import { Persona } from './persona.model';
 import { Ficha } from './ficha.model';
 import { Materias } from './materias.model';
 
@@ -32,7 +32,7 @@ export class DocenteMateriaFicha
   })
   id_docente_materia_ficha!: number;
 
-  @ForeignKey(() => persona)
+  @ForeignKey(() => Persona)
   @Column({
     type: DataType.INTEGER,
   })
@@ -50,8 +50,8 @@ export class DocenteMateriaFicha
   })
   id_ficha!: number;
 
-  @BelongsTo(() => persona)
-  persona!: persona;
+  @BelongsTo(() => Persona)
+  persona!: Persona;
 
   @BelongsTo(() => Materias)
   materia!: Materias;

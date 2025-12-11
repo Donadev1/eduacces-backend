@@ -6,9 +6,9 @@ import {
   ForeignKey,
   BelongsTo,
 } from 'sequelize-typescript';
-import { persona } from './persona.model';
+import { Persona } from './persona.model';
 
-interface asistenciaAttributes {
+interface AsistenciaAttributes {
   id_asistencia?: number;
   id_persona: number;
   fecha: Date;
@@ -21,9 +21,9 @@ interface asistenciaAttributes {
   tableName: 'asistencia',
   timestamps: false,
 })
-export class asistencia
-  extends Model<asistenciaAttributes>
-  implements asistenciaAttributes
+export class Asistencia
+  extends Model<AsistenciaAttributes>
+  implements AsistenciaAttributes
 {
   @Column({
     type: DataType.INTEGER,
@@ -32,7 +32,7 @@ export class asistencia
   })
   declare id_asistencia: number;
 
-  @ForeignKey(() => persona)
+  @ForeignKey(() => Persona)
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
@@ -65,6 +65,6 @@ export class asistencia
   estado?: string;
 
   // Relación con persona
-  @BelongsTo(() => persona)
-  persona?: persona;
+  @BelongsTo(() => Persona)
+  persona?: Persona;
 }

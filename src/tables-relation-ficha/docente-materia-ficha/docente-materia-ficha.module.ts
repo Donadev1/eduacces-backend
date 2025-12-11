@@ -8,5 +8,6 @@ import { DocenteMateriaFicha } from 'src/models/docente-materia-ficha.model';
   imports: [SequelizeModule.forFeature([DocenteMateriaFicha])],
   controllers: [DocenteMateriaFichaController],
   providers: [DocenteMateriaFichaService],
+  exports: [DocenteMateriaFichaService],
 })
 export class DocenteMateriaFichaModule {}

@@ -24,7 +24,7 @@ export class Ficha extends Model<AtributtesFicha> implements AtributtesFicha {
     primaryKey: true,
     autoIncrement: true,
   })
-  id_ficha!: number;
+  id_ficha: number;
 
   @Column({
     type: DataType.INTEGER,

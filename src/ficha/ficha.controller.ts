@@ -21,6 +21,13 @@ export class FichaController {
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('directivo')
+  @Get('metrics')
+  async metrics() {
+    return this.fichaService.getMetrics();
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('directivo')
   @Post()
   async create(@Body() dto: Omit<Ficha, 'id_ficha'>) {
     return this.fichaService.createFicha(dto);

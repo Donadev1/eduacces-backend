@@ -1,10 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { Carrera } from 'src/models/carrera.model';
+import { FindOptions } from 'sequelize';
 import { DocenteMateriaFicha } from 'src/models/docente-materia-ficha.model';
-import { Ficha } from 'src/models/ficha.model';
-import { Materias } from 'src/models/materias.model';
-import { persona } from 'src/models/persona.model';
+import { ResponseGeneral, TypeDataMetrics } from 'src/models/response.general';
 
 @Injectable()
 export class DocenteMateriaFichaService {
@@ -13,58 +11,25 @@ export class DocenteMateriaFichaService {
     private readonly docenteMateriaFichaModel: typeof DocenteMateriaFicha,
   ) {}
 
-  async findAll(): Promise<DocenteMateriaFicha[]> {
-    return this.docenteMateriaFichaModel.findAll({
-      attributes: {
-        exclude: [
-          'id_ficha',
-          'id_materias',
-          'id_persona',
-          'id_docente_materia_ficha',
-          'id_materia',
-        ],
+  async metrics() {
+    const data = await this.docenteMateriaFichaModel.count();
+
+    const response: ResponseGeneral<TypeDataMetrics> = {
+      success: true,
+      data: {
+        count: data,
       },
-      include: [
-        {
-          model: Ficha,
-          attributes: {
-            exclude: ['id_ficha', 'id_carrera'],
-          },
-          include: [
-            { model: Carrera, attributes: { exclude: ['id_carrera'] } },
-          ],
-        },
-        { model: persona, attributes: { exclude: ['id_persona', 'id_rol'] } },
-        { model: Materias, attributes: { exclude: ['id_materia'] } },
-      ],
-    });
+    };
+
+    return response;
   }
 
-  async findOne(id: number): Promise<DocenteMateriaFicha | null> {
-    return this.docenteMateriaFichaModel.findByPk(id, {
-      attributes: {
-        exclude: [
-          'id_ficha',
-          'id_materias',
-          'id_persona',
-          'id_docente_materia_ficha',
-          'id_materia',
-        ],
-      },
-      include: [
-        {
-          model: Ficha,
-          attributes: {
-            exclude: ['id_ficha', 'id_carrera'],
-          },
-          include: [
-            { model: Carrera, attributes: { exclude: ['id_carrera'] } },
-          ],
-        },
-        { model: persona, attributes: { exclude: ['id_persona', 'id_rol'] } },
-        { model: Materias, attributes: { exclude: ['id_materia'] } },
-      ],
-    });
+  async findOne(id: number, options: Omit<FindOptions, 'where'> = {}) {
+    return this.docenteMateriaFichaModel.findByPk(id, options);
+  }
+
+  async findAll(options: FindOptions) {
+    return this.docenteMateriaFichaModel.findAll(options);
   }
 
   async create(

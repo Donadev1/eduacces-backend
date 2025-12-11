@@ -1,24 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { users } from 'src/models/users.model';
-import { persona } from 'src/models/persona.model';
-import { rol } from 'src/models/rol.model';
+import { Users } from 'src/models/users.model';
+import { Persona } from 'src/models/persona.model';
+import { Rol } from 'src/models/rol.model';
 import { UpdateUserDto } from './dto/update.user.dto';
 import { col } from 'sequelize';
 
 @Injectable()
 export class UsersRepository {
-  constructor(@InjectModel(users) private readonly model: typeof users) {}
+  constructor(@InjectModel(Users) private readonly model: typeof Users) {}
 
   findByCorreoWithPersonaRol(correo: string) {
     return this.model.findOne({
       where: { correo },
       include: [
         {
-          model: persona,
+          model: Persona,
           as: 'persona',
           include: [
-            { model: rol, as: 'rol', attributes: ['id_rol', 'nombre'] },
+            { model: Rol, as: 'rol', attributes: ['id_rol', 'nombre'] },
           ],
         },
       ],
@@ -41,7 +41,7 @@ export class UsersRepository {
     });
   }
 
-  findAll(): Promise<users[]> {
+  findAll(): Promise<Users[]> {
     return this.model.findAll({
       attributes: [
         'id_user',
@@ -49,7 +49,7 @@ export class UsersRepository {
         'id_persona',
         [col('persona.nombre'), 'persona'],
       ],
-      include: [{ model: persona, attributes: [] }],
+      include: [{ model: Persona, attributes: [] }],
       raw: true,
     });
   }

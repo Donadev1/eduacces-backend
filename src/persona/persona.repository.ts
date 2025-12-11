@@ -1,19 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { col } from 'sequelize';
-import { persona } from 'src/models/persona.model';
-import { rol } from 'src/models/rol.model';
+import { Persona } from 'src/models/persona.model';
+import { Rol } from 'src/models/rol.model';
 import { CreatePersonaDto } from './dto/create.persona.dto';
 import { UpdatePersonaDto } from './dto/update.persona.dto';
 
 @Injectable()
 export class PersonaRepository {
   constructor(
-    @InjectModel(persona)
-    private personaModel: typeof persona,
+    @InjectModel(Persona)
+    private personaModel: typeof Persona,
   ) {}
 
-  async findAll(): Promise<persona[]> {
+  async findAll(): Promise<Persona[]> {
     return this.personaModel.findAll({
       attributes: [
         'id_persona',
@@ -24,12 +24,12 @@ export class PersonaRepository {
         'telefono',
         [col('rol.nombre'), 'rol'],
       ],
-      include: [{ model: rol, attributes: [] }],
+      include: [{ model: Rol, attributes: [] }],
       raw: true,
     });
   }
 
-  async findById(id_persona: number): Promise<persona | null> {
+  async findById(id_persona: number): Promise<Persona | null> {
     return this.personaModel.findByPk(id_persona, {
       attributes: [
         'id_persona',
@@ -40,27 +40,27 @@ export class PersonaRepository {
         'telefono',
         [col('rol.nombre'), 'rol'],
       ],
-      include: [{ model: rol, attributes: [] }],
+      include: [{ model: Rol, attributes: [] }],
       raw: true,
     });
   }
 
-  async create(createpersonadto: CreatePersonaDto): Promise<persona> {
+  async create(createpersonadto: CreatePersonaDto): Promise<Persona> {
     return this.personaModel.create(createpersonadto);
   }
 
-  async findByDocumento(documento: string): Promise<persona | null> {
+  async findByDocumento(documento: string): Promise<Persona | null> {
     return this.personaModel.findOne({ where: { documento } });
   }
 
-  async findByCorreo(correo: string): Promise<persona | null> {
+  async findByCorreo(correo: string): Promise<Persona | null> {
     return this.personaModel.findOne({ where: { correo } });
   }
 
   async update(
     id_persona: number,
     updateperson: UpdatePersonaDto,
-  ): Promise<persona | null> {
+  ): Promise<Persona | null> {
     const personaDb = await this.personaModel.findByPk(id_persona);
     if (!personaDb) {
       return null;
@@ -78,7 +78,7 @@ export class PersonaRepository {
 
   findByIdWithRol(id_persona: number) {
     return this.personaModel.findByPk(id_persona, {
-      include: [{ model: rol, as: 'rol', attributes: ['id_rol', 'nombre'] }],
+      include: [{ model: Rol, as: 'rol', attributes: ['id_rol', 'nombre'] }],
     });
   }
 }

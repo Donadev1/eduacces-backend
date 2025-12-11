@@ -6,12 +6,12 @@ import { HuellaMap } from 'src/models/hulla_map';
 import { HuellaMapRepository } from './huella_map.repository';
 import { AsistenciaModule } from 'src/asistencia/asistencia.module';
 import { PersonaModule } from 'src/persona/persona.module';
-import { asistencia } from 'src/models/asistencia.model';
-import { persona } from 'src/models/persona.model';
+import { Asistencia } from 'src/models/asistencia.model';
+import { Persona } from 'src/models/persona.model';
 
 @Module({
   imports: [
-    SequelizeModule.forFeature([HuellaMap, asistencia, persona]),
+    SequelizeModule.forFeature([HuellaMap, Asistencia, Persona]),
     forwardRef(() => AsistenciaModule),
     forwardRef(() => PersonaModule),
   ],
