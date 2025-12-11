@@ -77,7 +77,13 @@ export class RelationsClassService {
     const materias =
       await this.docente_materiaService.findAll(options_materias);
 
-    if (!docente_materia) {
+    const ficha_data = await this.fichaService.getFichaById(id_ficha, {
+      attributes: {
+        exclude: ['id_carrera'],
+      },
+    });
+
+    if (!docente_materia || !ficha_data) {
       throw new NotFoundException('Ficha not found');
     }
 
@@ -100,6 +106,7 @@ export class RelationsClassService {
     const response: ResponseGeneral<TypeDatasRelationClass> = {
       success: true,
       data: {
+        ficha: ficha_data,
         carrera: docente_materia.ficha.carrera,
         materias: materias.map((value) => value.materia),
         docente: docente_materia.persona,

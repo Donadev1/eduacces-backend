@@ -1,5 +1,6 @@
 import { Carrera } from './carrera.model';
 import { EstudianteFicha } from './estudiante-ficha.model';
+import { Ficha } from './ficha.model';
 import { Materias } from './materias.model';
 import { Persona } from './persona.model';
 
@@ -19,6 +20,7 @@ export class TypeDatasFichaCreate {
 }
 
 export class TypeDatasRelationClass {
+  ficha: Ficha;
   carrera: Carrera;
   docente: Persona;
   materias: Materias[];
